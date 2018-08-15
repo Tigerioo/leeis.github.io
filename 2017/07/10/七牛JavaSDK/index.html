@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="介绍官方文档 Java SDK 属于七牛服务端SDK之一，主要有如下功能：  提供生成客户端上传所需的上传凭证的功能 提供文件从服务端直接上传七牛的功能 提供对七牛空间中文件进行管理的功能 提供对七牛空间中文件进行处理的功能 提供七牛CDN相关的刷新，预取，日志功能  安装Gradle compile ‘com.qiniu:qiniu-java-sdk:7.2.+’ Maven   com.qin">
+<meta name="keywords" content="七牛">
+<meta property="og:type" content="article">
+<meta property="og:title" content="七牛JavaSDK">
+<meta property="og:url" content="http://ioman.cc/2017/07/10/七牛JavaSDK/index.html">
+<meta property="og:site_name" content="IOMan">
+<meta property="og:description" content="介绍官方文档 Java SDK 属于七牛服务端SDK之一，主要有如下功能：  提供生成客户端上传所需的上传凭证的功能 提供文件从服务端直接上传七牛的功能 提供对七牛空间中文件进行管理的功能 提供对七牛空间中文件进行处理的功能 提供七牛CDN相关的刷新，预取，日志功能  安装Gradle compile ‘com.qiniu:qiniu-java-sdk:7.2.+’ Maven   com.qin">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-15T02:22:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="七牛JavaSDK">
+<meta name="twitter:description" content="介绍官方文档 Java SDK 属于七牛服务端SDK之一，主要有如下功能：  提供生成客户端上传所需的上传凭证的功能 提供文件从服务端直接上传七牛的功能 提供对七牛空间中文件进行管理的功能 提供对七牛空间中文件进行处理的功能 提供七牛CDN相关的刷新，预取，日志功能  安装Gradle compile ‘com.qiniu:qiniu-java-sdk:7.2.+’ Maven   com.qin">
+
+
+
+
+
+
+  <link rel="canonical" href="http://ioman.cc/2017/07/10/七牛JavaSDK/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>七牛JavaSDK | IOMan</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">IOMan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Keep Input, Keep Output.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ioman.cc/2017/07/10/七牛JavaSDK/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mario">
+      <meta itemprop="description" content="Life is so short, do something to make yourself happy, such as coding.">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IOMan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">七牛JavaSDK
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-07-10 10:58:30" itemprop="dateCreated datePublished" datetime="2017-07-10T10:58:30+08:00">2017-07-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-08-15 10:22:46" itemprop="dateModified" datetime="2018-08-15T10:22:46+08:00">2018-08-15</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><a href="https://developer.qiniu.com/kodo/sdk/1239/java" target="_blank" rel="noopener">官方文档</a></p>
+<p>Java SDK 属于七牛服务端SDK之一，主要有如下功能：</p>
+<ol>
+<li>提供生成客户端上传所需的上传凭证的功能</li>
+<li>提供文件从服务端直接上传七牛的功能</li>
+<li>提供对七牛空间中文件进行管理的功能</li>
+<li>提供对七牛空间中文件进行处理的功能</li>
+<li>提供七牛CDN相关的刷新，预取，日志功能</li>
+</ol>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><strong>Gradle</strong></p>
+<p>compile ‘com.qiniu:qiniu-java-sdk:7.2.+’</p>
+<p><strong>Maven</strong></p>
+<dependency><br>  <groupid>com.qiniu</groupid><br>  <artifactid>qiniu-java-sdk</artifactid><br>  <version>[7.2.0, 7.2.99]</version><br></dependency>
+
+
+<h3 id="鉴权"><a href="#鉴权" class="headerlink" title="鉴权"></a>鉴权</h3><p>七牛账号需要通过一对密钥访问, 分别是<code>Access Key</code>和<code>Secret Key</code>, 可在网站的<strong>个人中心-&gt;密钥管理</strong>中查看</p>
+<h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><p>上传需要几个基本参数：<code>AccessKey</code>, <code>SecretKey</code>, <code>bucket</code>, <code>Key</code></p>
+<p><code>AccessKey</code>: 个人中心-&gt;密钥管理中获取<br><code>SecretKey</code>: 个人中心-&gt;密钥管理中获取<br><code>bucket</code>: 七牛中的存储空间名称<br><code>Key</code>: 图片文件名称</p>
+<p>请求返回值，包含<code>Key</code>和<code>Hash</code>，如果不带key值，则两个值一样, 请求的时候用Url+Key访问。</p>
+<h4 id="客户端上传"><a href="#客户端上传" class="headerlink" title="客户端上传"></a>客户端上传</h4><p>APP端、Web端如果要上传图片，需要向服务端请求token， 请求方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">String accessKey = <span class="string">"access key"</span>;</span><br><span class="line">String secretKey = <span class="string">"secret key"</span>;</span><br><span class="line">String bucket = <span class="string">"bucket name"</span>;</span><br><span class="line"></span><br><span class="line">Auth auth = Auth.create(accessKey, secretKey);</span><br><span class="line">String upToken = auth.uploadToken(bucket);</span><br><span class="line">System.out.println(upToken);</span><br></pre></td></tr></table></figure>
+<p>客户端拿到<code>token</code>之后，通过<code>post</code>请求<code>http://upload.qiniu.com/</code>，上传文件和<code>token</code>参数即可。</p>
+<h4 id="服务端上传"><a href="#服务端上传" class="headerlink" title="服务端上传"></a>服务端上传</h4><h5 id="文件上传-1"><a href="#文件上传-1" class="headerlink" title="文件上传"></a>文件上传</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构造一个带指定Zone对象的配置类</span></span><br><span class="line">Configuration cfg = <span class="keyword">new</span> Configuration(Zone.zone0());</span><br><span class="line"><span class="comment">//...其他参数参考类注释</span></span><br><span class="line"></span><br><span class="line">UploadManager uploadManager = <span class="keyword">new</span> UploadManager(cfg);</span><br><span class="line"><span class="comment">//...生成上传凭证，然后准备上传</span></span><br><span class="line">String accessKey = <span class="string">"your access key"</span>;</span><br><span class="line">String secretKey = <span class="string">"your secret key"</span>;</span><br><span class="line">String bucket = <span class="string">"your bucket name"</span>;</span><br><span class="line"><span class="comment">//如果是Windows情况下，格式是 D:\\qiniu\\test.png</span></span><br><span class="line">String localFilePath = <span class="string">"/home/qiniu/test.png"</span>;</span><br><span class="line"><span class="comment">//默认不指定key的情况下，以文件内容的hash值作为文件名</span></span><br><span class="line">String key = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">Auth auth = Auth.create(accessKey, secretKey);</span><br><span class="line">String upToken = auth.uploadToken(bucket);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Response response = uploadManager.put(localFilePath, key, upToken);</span><br><span class="line">    <span class="comment">//解析上传成功的结果</span></span><br><span class="line">    DefaultPutRet putRet = <span class="keyword">new</span> Gson().fromJson(response.bodyString(), DefaultPutRet.class);</span><br><span class="line">    System.out.println(putRet.key);</span><br><span class="line">    System.out.println(putRet.hash);</span><br><span class="line">&#125; <span class="keyword">catch</span> (QiniuException ex) &#123;</span><br><span class="line">    Response r = ex.response;</span><br><span class="line">    System.err.println(r.toString());</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        System.err.println(r.bodyString());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (QiniuException ex2) &#123;</span><br><span class="line">        <span class="comment">//ignore</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="字节数组上传"><a href="#字节数组上传" class="headerlink" title="字节数组上传"></a>字节数组上传</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构造一个带指定Zone对象的配置类</span></span><br><span class="line">Configuration cfg = <span class="keyword">new</span> Configuration(Zone.zone0());</span><br><span class="line"><span class="comment">//...其他参数参考类注释</span></span><br><span class="line"></span><br><span class="line">UploadManager uploadManager = <span class="keyword">new</span> UploadManager(cfg);</span><br><span class="line"><span class="comment">//...生成上传凭证，然后准备上传</span></span><br><span class="line">String accessKey = <span class="string">"your access key"</span>;</span><br><span class="line">String secretKey = <span class="string">"your secret key"</span>;</span><br><span class="line">String bucket = <span class="string">"your bucket name"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//默认不指定key的情况下，以文件内容的hash值作为文件名</span></span><br><span class="line">String key = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">byte</span>[] uploadBytes = <span class="string">"hello qiniu cloud"</span>.getBytes(<span class="string">"utf-8"</span>);</span><br><span class="line">    Auth auth = Auth.create(accessKey, secretKey);</span><br><span class="line">    String upToken = auth.uploadToken(bucket);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Response response = uploadManager.put(uploadBytes, key, upToken);</span><br><span class="line">        <span class="comment">//解析上传成功的结果</span></span><br><span class="line">        DefaultPutRet putRet = <span class="keyword">new</span> Gson().fromJson(response.bodyString(), DefaultPutRet.class);</span><br><span class="line">        System.out.println(putRet.key);</span><br><span class="line">        System.out.println(putRet.hash);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (QiniuException ex) &#123;</span><br><span class="line">        Response r = ex.response;</span><br><span class="line">        System.err.println(r.toString());</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.err.println(r.bodyString());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (QiniuException ex2) &#123;</span><br><span class="line">            <span class="comment">//ignore</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (UnsupportedEncodingException ex) &#123;</span><br><span class="line">    <span class="comment">//ignore</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="数据流上传"><a href="#数据流上传" class="headerlink" title="数据流上传"></a>数据流上传</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构造一个带指定Zone对象的配置类</span></span><br><span class="line">Configuration cfg = <span class="keyword">new</span> Configuration(Zone.zone0());</span><br><span class="line"><span class="comment">//...其他参数参考类注释</span></span><br><span class="line"></span><br><span class="line">UploadManager uploadManager = <span class="keyword">new</span> UploadManager(cfg);</span><br><span class="line"><span class="comment">//...生成上传凭证，然后准备上传</span></span><br><span class="line">String accessKey = <span class="string">"your access key"</span>;</span><br><span class="line">String secretKey = <span class="string">"your secret key"</span>;</span><br><span class="line">String bucket = <span class="string">"your bucket name"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//默认不指定key的情况下，以文件内容的hash值作为文件名</span></span><br><span class="line">String key = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">byte</span>[] uploadBytes = <span class="string">"hello qiniu cloud"</span>.getBytes(<span class="string">"utf-8"</span>);</span><br><span class="line">    ByteArrayInputStream byteInputStream=<span class="keyword">new</span> ByteArrayInputStream(uploadBytes);</span><br><span class="line">    Auth auth = Auth.create(accessKey, secretKey);</span><br><span class="line">    String upToken = auth.uploadToken(bucket);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Response response = uploadManager.put(byteInputStream,key,upToken,<span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">//解析上传成功的结果</span></span><br><span class="line">        DefaultPutRet putRet = <span class="keyword">new</span> Gson().fromJson(response.bodyString(), DefaultPutRet.class);</span><br><span class="line">        System.out.println(putRet.key);</span><br><span class="line">        System.out.println(putRet.hash);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (QiniuException ex) &#123;</span><br><span class="line">        Response r = ex.response;</span><br><span class="line">        System.err.println(r.toString());</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.err.println(r.bodyString());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (QiniuException ex2) &#123;</span><br><span class="line">            <span class="comment">//ignore</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (UnsupportedEncodingException ex) &#123;</span><br><span class="line">    <span class="comment">//ignore</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="断电续传"><a href="#断电续传" class="headerlink" title="断电续传"></a>断电续传</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构造一个带指定Zone对象的配置类</span></span><br><span class="line">Configuration cfg = <span class="keyword">new</span> Configuration(Zone.zone0());</span><br><span class="line"><span class="comment">//...其他参数参考类注释</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//...生成上传凭证，然后准备上传</span></span><br><span class="line">String accessKey = <span class="string">"your access key"</span>;</span><br><span class="line">String secretKey = <span class="string">"your secret key"</span>;</span><br><span class="line">String bucket = <span class="string">"your bucket name"</span>;</span><br><span class="line"><span class="comment">//如果是Windows情况下，格式是 D:\\qiniu\\test.png</span></span><br><span class="line">String localFilePath = <span class="string">"/home/qiniu/test.mp4"</span>;</span><br><span class="line"><span class="comment">//默认不指定key的情况下，以文件内容的hash值作为文件名</span></span><br><span class="line">String key = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">Auth auth = Auth.create(accessKey, secretKey);</span><br><span class="line">String upToken = auth.uploadToken(bucket);</span><br><span class="line"></span><br><span class="line">String localTempDir = Paths.get(System.getenv(<span class="string">"java.io.tmpdir"</span>), bucket).toString();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">//设置断点续传文件进度保存目录</span></span><br><span class="line">    FileRecorder fileRecorder = <span class="keyword">new</span> FileRecorder(localTempDir);</span><br><span class="line">    UploadManager uploadManager = <span class="keyword">new</span> UploadManager(cfg, fileRecorder);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Response response = uploadManager.put(localFilePath, key, upToken);</span><br><span class="line">        <span class="comment">//解析上传成功的结果</span></span><br><span class="line">        DefaultPutRet putRet = <span class="keyword">new</span> Gson().fromJson(response.bodyString(), DefaultPutRet.class);</span><br><span class="line">        System.out.println(putRet.key);</span><br><span class="line">        System.out.println(putRet.hash);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (QiniuException ex) &#123;</span><br><span class="line">        Response r = ex.response;</span><br><span class="line">        System.err.println(r.toString());</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.err.println(r.bodyString());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (QiniuException ex2) &#123;</span><br><span class="line">            <span class="comment">//ignore</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">    ex.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/七牛/" rel="tag"># 七牛</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/01/有效管理你的健康-得到APP/" rel="next" title="有效管理你的健康-得到APP">
+                <i class="fa fa-chevron-left"></i> 有效管理你的健康-得到APP
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/15/Spring-常用配置/" rel="prev" title="Spring 常用配置">
+                Spring 常用配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Mario</p>
+              <p class="site-description motion-element" itemprop="description">Life is so short, do something to make yourself happy, such as coding.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ioman.cc/" title="Title" target="_blank">Title</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#鉴权"><span class="nav-number">3.</span> <span class="nav-text">鉴权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件上传"><span class="nav-number">4.</span> <span class="nav-text">文件上传</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端上传"><span class="nav-number">4.1.</span> <span class="nav-text">客户端上传</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端上传"><span class="nav-number">4.2.</span> <span class="nav-text">服务端上传</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#文件上传-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">文件上传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字节数组上传"><span class="nav-number">4.2.2.</span> <span class="nav-text">字节数组上传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据流上传"><span class="nav-number">4.2.3.</span> <span class="nav-text">数据流上传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#断电续传"><span class="nav-number">4.2.4.</span> <span class="nav-text">断电续传</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mario</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+
+</body>
+</html>
